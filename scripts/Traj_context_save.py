@@ -80,13 +80,35 @@ class Trajectory:
                               np.dot(self.phi.T, self.joint_positions))
 
 
+def find_transformation_parameters(trajectory_list):
+    s = np.ones((len(trajectory_list), 7))
+    k = np.zeros((14, 7, trajectory_list[0].basis_centres.shape[0]))
+    w = np.zeros((14, len(trajectory_list), trajectory_list[0].basis_centres.shape[0]))
+    task_s = np.zeros((7, 1))
+    r = np.zeros((14, trajectory_list[0].basis_centres.shape[0], 1))
+    for i in range(0, len(trajectory_list)):
+        s[i, 1:] = trajectory_list[i].context
+        for j in range(0, 14):
+            w[j][i, :] = trajectory_list[i].weights[:, j]
+    regularization_factor = 1e-10
+    i_mat = np.identity(s.shape[1])
+    for j in range(0, 14):
+        k[j] = np.dot(np.linalg.inv(np.dot(s.T, s) + regularization_factor * i_mat), np.dot(s.T, w[j]))
+
+    task_s = s[:1, :].T
+
+    for j in range(0, 14):
+        r[j] = np.dot(k[j].T, task_s)
+    print(0)
+
+
 def calc_trajectory(weights, steps):
     num_basis_inside = 11
     num_basis_outside = 4
     num_basis_tot = num_basis_inside + num_basis_outside
     basis_centre_gap = 1.0 / (num_basis_inside - 1)
     basis_width = 2 * basis_centre_gap ** 2
-    phase = np.linspace(0,1,steps)
+    phase = np.linspace(0, 1, steps)
     basis_centres = np.linspace(-2 * basis_centre_gap, 1 + 2 * basis_centre_gap, num_basis_tot)
     phi = np.zeros((steps, num_basis_tot))
     for z in range(0, steps):
@@ -97,7 +119,7 @@ def calc_trajectory(weights, steps):
     return traj
 
 
-def baxter_play(traj, num, boxpos):
+def baxter_play(traj,  boxpos, num=1):
     pub1 = rospy.Publisher('/replay/joint_states', JointState, queue_size=10)
     rate = rospy.Rate(100)
 
@@ -117,7 +139,7 @@ def baxter_play(traj, num, boxpos):
 
 if __name__ == '__main__':
     rospy.init_node('trajectory_replay', anonymous=True)
-    input_files = glob.glob('/home/akhil/Downloads/box_40_15_15/turnDemoSlave10.txt')
+    input_files = glob.glob('/home/akhil/Downloads/box_40_15_15/turnDemoSlave1*.txt')
     trajectory_list = []
     for name in input_files:
         try:
@@ -126,11 +148,22 @@ if __name__ == '__main__':
             if exc.errno != errno.EISDIR:
                 raise
 
-    for i in range(0, len(trajectory_list)):
+    #find_transformation_parameters(trajectory_list)
+
+    # for j in range(0, 7):
+    #     plt.figure(j*2)
+    #     for i in range(0, len(trajectory_list)):
+    #         y = trajectory_list[i].joint_positions[:, j]
+    #         plt.plot(y)
+    #     plt.figure(j*2+1)
+    #     for i in range(0, len(trajectory_list)):
+    #         y = trajectory_list[i].joint_positions[:, j+7]
+    #         plt.plot(y)
+    #plt.show()
+    for i in range(0, 1):
         traj = calc_trajectory(trajectory_list[i].weights, 1500)
-        baxter_play(traj, (i+1), np.concatenate((trajectory_list[i].box_positions[0],
-                                                 trajectory_list[i].box_orientations[0]), axis=0))
+
+        #baxter_play(traj, np.concatenate((trajectory_list[i].box_positions[0],
+        #         trajectory_list[i].box_orientations[0]), axis=0), (i+1))
 
     #print(block_diag(*[o.context for o in trajectory_list]))
-
-
