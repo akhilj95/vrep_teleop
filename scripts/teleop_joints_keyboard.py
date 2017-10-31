@@ -123,7 +123,7 @@ class SimpleKeyTeleop():
             if now - self._last_pressed[a] < 0.001:
                 keys.append(a)
         for k in keys:
-		tempangles=self.movement_bindings[k];
+		tempangles=self.movement_bindings[k]
 		for i in range(0,13):
 			angles[i] =angles[i]+tempangles[i]
 	for i in range(0,13):
