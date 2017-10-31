@@ -1,11 +1,12 @@
-int64 stamp
+int64 seq
+float64 timeStamp
 float64[] currentPos
 float64[] targetPos
 float64[] newTargetPos
 float64[] errorValue
-float64[] vs
-float64[] vel
-float64[] maxVelocity
+float64[] targetVel
+float64[] currentVel
+float64[] newTargetVel
 float64[] effort
 float64[] simTime
 float64[] boxPosition
