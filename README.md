@@ -26,4 +26,4 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 >       rosrun baxter_tools enable_robot.py -e
 >       rosrun baxter_tools tuck_arms.py -u
 * start V-REP and open _vrep/scenes/baxter_teleop.ttt_
-* run the python script _script/input.py_ if you wish to record the data
+* run the python script _script/teleop_data_logging.py_ if you wish to record the data
