@@ -16,7 +16,10 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 * Open _package.xml_, and add these two lines:
 >       <build_depend>vrep_teleop</build_depend>
 >       <run_depend>vrep_teleop</run_depend>    
-* Rebuild your catkin workspace and copy the library file _libv_repExtRosInterface.so_ in _devel/lib_ folder to your V-REP installation folder.
+* Rebuild your catkin workspace using
+>       $ catkin build
+* Copy the library file _libv_repExtRosInterface.so_ in _devel/lib_ folder to your V-REP installation folder.
+>       $ cp -iv devel/lib/libv_repExtRosInterface.so "$VREP_ROOT/"
 * Copy the _matrix.lau_ file in _vrep/lua_ to the _lua_ folder of your V-REP installation folder.
 
 ## To use
@@ -25,5 +28,5 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 * Enable the baxter:
 >       rosrun baxter_tools enable_robot.py -e
 >       rosrun baxter_tools tuck_arms.py -u
-* start V-REP and open _vrep/scenes/baxter_teleop.ttt_
+* start V-REP and open _vrep/scenes/baxterTeleopRecording.ttt_
 * run the python script _script/teleop_data_logging.py_ if you wish to record the data
