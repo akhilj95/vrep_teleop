@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# run the ReplaySavedTrajectory.ttt file on Vrep before running this
+
 import numpy as np
 import glob
 import errno
