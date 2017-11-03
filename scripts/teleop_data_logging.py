@@ -27,8 +27,8 @@ class RecordData:
         self.newTargetVel = []
         self.effort = []
         self.ts = []
-        self.f1 = open("/home/akhil/box_30_15_15/turnDemoMaster100txt", "w+")
-        self.f2 = open("/home/akhil/box_30_15_15/turnDemoSlave100.txt", "w+")
+        self.f1 = open("/home/akhiljohn/Data/box_40_15_15/turnDemoMaster_c_6_t_10_l.txt", "w+")
+        self.f2 = open("/home/akhiljohn/Data/box_40_15_15/turnDemoSlave_c_6_t_10_l.txt", "w+")
 
         rospy.Subscriber('robot/digital_io/left_lower_button/state', DigitalIOState, self.left_button)
         rospy.Subscriber('robot/digital_io/left_lower_cuff/state', DigitalIOState, self.left_cuff)
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         effort = np.array(startRecord.effort).reshape((totalRead, startRecord.n))
         ts = np.array(startRecord.ts).reshape((totalRead, startRecord.n))
 
-        for i in range(0, startRecord.n-14):
+        for i in range(0, startRecord.n):
             plt.figure(i+1)
             plt.figure(i+1).suptitle('Joint'+str(i+1))
             plt.subplot(511)
