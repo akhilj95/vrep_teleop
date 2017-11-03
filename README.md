@@ -21,6 +21,7 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 * Copy the library file _libv_repExtRosInterface.so_ in _devel/lib_ folder to your V-REP installation folder.
 >       $ cp -iv devel/lib/libv_repExtRosInterface.so "$VREP_ROOT/"
 * Copy the _matrix.lau_ file in _vrep/lua_ to the _lua_ folder of your V-REP installation folder.
+>       $ cp -iv src/vrep_teleop/vrep/lua/matrix.lau "$VREP_ROOT/lua/"
 
 ## To use
 * Start baxter and from your Baxter Workspace run
