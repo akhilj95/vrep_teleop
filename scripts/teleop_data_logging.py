@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# run the baxterTeleopRecording.ttt file on Vrep before running this
+
 import rospy
 from baxter_core_msgs.msg import DigitalIOState
 from sensor_msgs.msg import JointState
@@ -27,8 +29,8 @@ class RecordData:
         self.newTargetVel = []
         self.effort = []
         self.ts = []
-        self.f1 = open("/home/akhiljohn/Data/box_40_15_15/turnDemoMaster_c_6_t_10_l.txt", "w+")
-        self.f2 = open("/home/akhiljohn/Data/box_40_15_15/turnDemoSlave_c_6_t_10_l.txt", "w+")
+        self.f1 = open("/home/user/turnDemoMaster_1.txt", "w+")
+        self.f2 = open("/home/user//turnDemoSlave_1.txt", "w+")
 
         rospy.Subscriber('robot/digital_io/left_lower_button/state', DigitalIOState, self.left_button)
         rospy.Subscriber('robot/digital_io/left_lower_cuff/state', DigitalIOState, self.left_cuff)
