@@ -1,22 +1,15 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-# Copyright (c) 2013 PAL Robotics SL.
-# Released under the BSD License.
-#
-# Authors:
-#   * Siegfried-A. Gevatter
+
+# Run this only from the terminal using
+# $ rosrun vrep_teleop teleop_joints_keyboard.py
+# Run the baxterTeleopFromKeyboard.ttt file on vrep
 
 import curses
-import math
-
 import rospy
-#from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64MultiArray
 
 
-class TextWindow():
-
+class TextWindow:
     _screen = None
     _window = None
     _num_lines = None
@@ -53,47 +46,43 @@ class TextWindow():
         curses.flash()
 
 
-
-class SimpleKeyTeleop():
+class SimpleKeyTeleop:
     def __init__(self, interface):
         self._interface = interface
         self._pub_cmd = rospy.Publisher('key_vel', Float64MultiArray)
-	#queue_size=10
-        self._hz = rospy.get_param('~hz',250)
+        self._hz = rospy.get_param('~hz', 250)
 
         self._last_pressed = {}
-        self._angles = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100]
-	
+        self._angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100]
 
     movement_bindings = {
+        101:		  (0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        114:		  (0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	101:		  (0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	114:		  (0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        116:		  (0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        121:		  (0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	116:		  (0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	121:		  (0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        117:		  (0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        105:		  (0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	117:		  (0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	105:		  (0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        111:		  (0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        112:		  (0.0, 0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	111:		  (0.0,0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	112:		  (0.0,0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        97:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        115:		  (0.0, 0.0, 0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	97:		  (0.0,0.0,0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	115:		  (0.0,0.0,0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        100:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        102:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	100:		  (0.0,0.0,0.0,0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-	102:		  (0.0,0.0,0.0,0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        103:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0),
+        104:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	103:		  (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0),
-	104:		  (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0),
+        109:		  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
-	109:		  (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-
-        curses.KEY_UP:    (0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
-        curses.KEY_LEFT:  (0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.005,0.0,0.0,0.0,0.0,0.0,0.0),
-        curses.KEY_RIGHT:  (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.005,0.0,0.0,0.0,0.0,0.0,0.0),
-        curses.KEY_DOWN: (-0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),
+        curses.KEY_UP:    (0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        curses.KEY_LEFT:  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        curses.KEY_RIGHT:  (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        curses.KEY_DOWN: (-0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
     }
 
     def run(self):
@@ -117,17 +106,16 @@ class SimpleKeyTeleop():
     def _append(self):
         now = rospy.get_time()
         keys = []
-	angles = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
-	tempangles = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         for a in self._last_pressed:
             if now - self._last_pressed[a] < 0.001:
                 keys.append(a)
         for k in keys:
-		tempangles=self.movement_bindings[k]
-		for i in range(0,13):
-			angles[i] =angles[i]+tempangles[i]
-	for i in range(0,13):
-        	self._angles[i] = self._angles[i] + angles[i]
+            tempangles = self.movement_bindings[k]
+            for i in range(0,13):
+                angles[i] = angles[i]+tempangles[i]
+        for i in range(0,13):
+            self._angles[i] = self._angles[i] + angles[i]
 
     def _key_pressed(self, keycode):
         if keycode == ord('q'):
@@ -138,10 +126,10 @@ class SimpleKeyTeleop():
 
     def _publish(self):
         self._interface.clear()
-        self._interface.write_line(2, 'Check text')
-        self._interface.write_line(5, 'Use arrow keys to move, q to exit.')
+        self._interface.write_line(2, 'Use characters from e to h on keyboard or arrow keys to move')
+        self._interface.write_line(5, 'press q to exit.')
         self._interface.refresh()
-	self._angles[14]=rospy.get_time()
+        self._angles[14]=rospy.get_time()
         joints = self._get_joints(self._angles)
         self._pub_cmd.publish(joints)
 
