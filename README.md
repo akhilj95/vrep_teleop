@@ -23,11 +23,11 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 * Copy the _matrix.lau_ file in _vrep/lua_ to the _lua_ folder of your V-REP installation folder.
 >       $ cp -iv src/vrep_teleop/vrep/lua/matrix.lau "$VREP_ROOT/lua/"
 
-## To use
-* Start baxter and from your Baxter Workspace run
+## To use for recording
+1) Start baxter and from your Baxter Workspace run
 >       ./baxter.sh
-* Enable the baxter:
+2) Enable the baxter:
 >       rosrun baxter_tools enable_robot.py -e
 >       rosrun baxter_tools tuck_arms.py -u
-* start V-REP and open _vrep/scenes/baxterTeleopRecording.ttt_
-* run the python script _script/teleop_data_logging.py_ if you wish to record the data
+3) Open another terminal repeat step 1. Then start V-REP and open _vrep/scenes/baxterTeleopRecording.ttt_
+4) Open another terminal repeat step 1. Then run the python script _script/teleop_data_logging.py_ if you wish to record the data
