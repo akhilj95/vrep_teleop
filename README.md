@@ -34,5 +34,6 @@ Guide to install and setup these are given [here](https://github.com/akhilj95/vr
 
 
 ## Other
+* Some sample data are given in _vrep/SampleData/_.
 * Scripts for using the saved data are there in _script/_ folder.
 * Read the instruction at the beginning of the scripts.
