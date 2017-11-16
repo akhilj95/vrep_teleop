@@ -1,5 +1,5 @@
 # Vrep_RosInterface_teleop
-V-rep and ros used to create teleoperation system with Baxter.
+V-rep and ROS used to create a teleoperation system with Baxter to learn from demonstrations. Here is a small [video clip](https://youtu.be/53QvpNsICyA) as an example.
 
 ## Prerequisites
 * [ROS Kinetic](http://wiki.ros.org/kinetic/Installation)
