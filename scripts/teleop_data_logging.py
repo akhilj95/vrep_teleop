@@ -30,7 +30,7 @@ class RecordData:
         self.effort = []
         self.ts = []
         self.f1 = open("/home/user/turnDemoMaster_1.txt", "w+")
-        self.f2 = open("/home/user//turnDemoSlave_1.txt", "w+")
+        self.f2 = open("/home/user/turnDemoSlave_1.txt", "w+")
 
         rospy.Subscriber('robot/digital_io/left_lower_button/state', DigitalIOState, self.left_button)
         rospy.Subscriber('robot/digital_io/left_lower_cuff/state', DigitalIOState, self.left_cuff)
@@ -163,31 +163,35 @@ if __name__ == '__main__':
         for i in range(0, startRecord.n):
             plt.figure(i+1)
             plt.figure(i+1).suptitle('Joint'+str(i+1))
-            plt.subplot(511)
-            plt.plot(ts[:, i], targetPos[:, i], '.')
+            plt.subplot(311)
+            plt.plot(ts[:, i]-ts[0, 0], targetPos[:, i], '.', label='Master')
 
-            plt.subplot(511)
-            plt.plot(ts[:, i], newTargetPos[:, i], 'x r')
+            plt.subplot(311)
+            plt.plot(ts[:, i]-ts[0, 0], newTargetPos[:, i], '. r', label='Master_Corrected')
 
-            plt.subplot(511)
-            plt.plot(ts[:, i], currentPos[:, i], '. g')
+            plt.subplot(311)
+            plt.plot(ts[:, i]-ts[0, 0], currentPos[:, i], '. g', label='Slave')
 
-            plt.xlabel('masterPos(b), newTarget(r), SlavePos(g)')
+            plt.legend()
+            plt.xlabel('Time(in sec)')
+            plt.ylabel('Joint Angles(in Radians)')
 
-            plt.subplot(513)
-            plt.plot(ts[:, i], errorValue[:, i], '.')
-            plt.xlabel('errorValue')
+            plt.subplot(312)
+            plt.plot(ts[:, i]-ts[0, 0], errorValue[:, i], '.')
+            plt.xlabel('Time(in sec)')
+            plt.ylabel('Position Error(in Radians)')
 
-            plt.subplot(515)
-            plt.plot(ts[:, i], targetVel[:, i], '.')
+            plt.subplot(313)
+            plt.plot(ts[:, i]-ts[0, 0], targetVel[:, i], '.', label='Master_Velocity')
 
-            plt.subplot(515)
-            plt.plot(ts[:, i], newTargetVel[:, i], 'x r')
+            plt.subplot(313)
+            plt.plot(ts[:, i]-ts[0, 0], newTargetVel[:, i], '. r', label='Master_Velocity_Corrected')
 
-            plt.subplot(515)
-            plt.plot(ts[:, i], currentVel[:, i], '. g')
-
-            plt.xlabel('masterVel(b), newTargetVel(r), slaveVel(g)')
+            plt.subplot(313)
+            plt.plot(ts[:, i]-ts[0, 0], currentVel[:, i], '. g', label='Slave_Velocity')
+            plt.legend()
+            plt.xlabel('Time(in sec)')
+            plt.ylabel('Joint Velocities(in Radians/sec)')
             # plt.figure(i+1).savefig("jn"+str(i+1)+".png")
         plt.show()
 
