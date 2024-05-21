@@ -1,4 +1,4 @@
-## This code is currently unusable due to changes in V-REP 3.5. Will make the necessary changes soon. Sorry for the inconvenience.
+## This code is currently unusable due to changes in V-REP 3.5.
 
 # Vrep_RosInterface_teleop
 V-rep and ROS used to create a teleoperation system with Baxter to learn from demonstrations. Here is a small [video clip](https://youtu.be/53QvpNsICyA) as an example.
